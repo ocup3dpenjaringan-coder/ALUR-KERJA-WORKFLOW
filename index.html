@@ -96,8 +96,8 @@ const DOC=[["Kepkaban 146/2018","I–X/SOP/BPRD/2018","10 SOP: pendaftaran WP ba
 const DK={1:[[0]],2:[[0]],3:[[0]],4:[[0]],5:[[0]],6:[[0]],7:[[2,"13 Agustus 2018"]],8:[[1]],9:[[1]],10:[[1]],11:[[3,"Alur A, SP2DK (Alur E)"]],12:[[4,"Juknis BPHTB elektronik"]]};
 function dkList(s){return DK[s.id].map(a=>[DOC[a[0]][0],a[1]||s.no,a[0]])}
 /* peta: nomor dokumen (DOC) -> nomor di daftar Peraturan (PR) */
-const DOCP={0:0,1:2,3:1,4:3,5:5};
-function dlink(di,txt){const k=DOCP[di];return(k!==undefined&&typeof PR!=="undefined"&&PR[k]&&PR[k].id)?`<a class="dl" href="#" data-p="${k}" title="Buka dokumen">${txt} ↗</a>`:txt}
+const DOCP={0:0,1:2,2:6,3:1,4:3,5:5};
+function dlink(di,txt){const k=DOCP[di];return(k!==undefined&&typeof PR!=="undefined"&&PR[k]&&PR[k].id)?`<a class="dl" href="https://drive.google.com/file/d/${PR[k].id}/view" target="_blank" rel="noopener" data-p="${k}" title="Buka dokumen">${txt} ↗</a>`:txt}
 function dkSet(s){$("#dkb").innerHTML='<div class="dkh">Dokumen</div>'+dkList(s).map(d=>`<div class="dkc"><b>${dlink(d[2],d[0])}</b><span>${d[1]}</span></div>`).join("")}
 const $=q=>document.querySelector(q),sel=$("#sel"),ct=$("#ct");let cur=S[0],z=1,fit=1;
 S.forEach((s,i)=>sel.add(new Option(s.t.replace(/&amp;/g,"&"),i)));
@@ -159,9 +159,10 @@ const PR=[
  {t:"SK Kaban No. 146 Tahun 2018",id:"1xUV_QgHyZkS8OUlWXOeCZvhHLOR2W54L"},
  {t:"SK Kaban No. 1201 Tahun 2026",id:"CcijrCfZBuqDzBWp3qSrBEZCqBUfQVz4CWGHWF91iaEw"},
  {t:"SK Kaban No. 2327 Tahun 2019",id:"1b34WxkKZc85iraEYv-btCtGJesLPnjwi"},
- {t:"SK Kaban No. 160 Tahun 2025",id:"1I4skcXq5oGcE5VQxXXZGlN8Qc2GOrEM1"},
+ {t:"SK Kaban No. 160 Tahun 2025",id:"12KgyaU_RyYSH-iP4YOrnv7okRUenlfLz"},
  {t:"SK Kaban No. 1489 Tahun 2018",id:"1S0jimhzFIkCIG2gLuZnH4ZvwkUFzpKWd"},
- {t:"SK Kepala Dinas No. 1189 Tahun 2018",id:""}
+ {t:"SK Kepala Dinas No. 1189 Tahun 2018",id:""},
+ {t:"SOP Mutasi & Pemecahan PBB-P2 (13 Agustus 2018)",id:"1I4skcXq5oGcE5VQxXXZGlN8Qc2GOrEM1"}
 ];
 const pm=$("#pm");
 pm.innerHTML="<b>Pilih peraturan:</b>";
@@ -175,7 +176,7 @@ function pOpen(i){
  $("#pfr").title=r.t;$("#pfr").src="https://drive.google.com/file/d/"+r.id+"/preview";
  [...pm.querySelectorAll("button")].forEach((b,k)=>b.setAttribute("aria-current",k==i));
  tab("prt");scrollTo(0,0)}
-document.addEventListener("click",e=>{const a=e.target.closest("a[data-p]");if(a){e.preventDefault();pOpen(+a.dataset.p)}});
+document.addEventListener("click",e=>{const a=e.target.closest("a[data-p]");if(a&&!(e.ctrlKey||e.metaKey||e.shiftKey||e.button)){e.preventDefault();pOpen(+a.dataset.p)}});
 $("#pbt").onclick=e=>{e.stopPropagation();mn.classList.remove("on");pm.classList.toggle("on")};
 $("#mbtn").addEventListener("click",()=>pm.classList.remove("on"));
 pm.onclick=e=>e.stopPropagation();
