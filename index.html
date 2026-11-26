@@ -36,17 +36,22 @@ svg text{font-family:system-ui,Arial,sans-serif}
 #dkb .dkh{background:var(--hd);color:#fff;font-weight:800;padding:6px 14px;border-bottom:2px solid #8aa0bf}
 #dkb .dkc{padding:8px 14px;line-height:1.3}#dkb .dkc+.dkc{border-top:1px solid var(--bd)}
 #dkb .dkc b{display:block;font-size:1.05rem}#dkb .dkc span{display:block;font-size:.85rem;color:var(--mu);font-weight:600;margin-top:2px}
+#pm{display:none;position:absolute;right:0;top:100%;margin-top:8px;background:var(--card);border:3px solid var(--ac);border-radius:14px;padding:12px;width:340px;max-width:calc(100vw - 40px);box-shadow:0 10px 30px #0007;text-align:left;white-space:normal;z-index:30}#pm.on{display:block}#pm b{display:block;margin-bottom:4px}#pm button{display:block;width:100%;margin:6px 0;text-align:left}#pm button[aria-current=true]{background:var(--ac);color:#fff;border-color:var(--ac)}
+#pvh{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin:0 0 10px}#pvh h2{margin:0;font-size:1.2rem}#pfr{display:block;width:100%;height:calc(100vh - 230px);min-height:480px;border:2px solid var(--bd);border-radius:12px;background:#fff}
+a.dl{color:var(--ac);text-decoration:underline;cursor:pointer}a.dl:focus-visible{outline:4px solid var(--ac);outline-offset:2px}
+.btnl{display:inline-block;font-weight:700;padding:12px 16px;border-radius:10px;border:2px solid var(--ac);background:var(--ac);color:#fff;text-decoration:none;min-height:48px}.btnl:focus-visible{outline:4px solid var(--ac);outline-offset:2px}
 </style></head><body>
 <header><div><h1 id="ttl">Alur Pelayanan Pajak Daerah DKI Jakarta</h1><small>Standar Operasional Prosedur (SOP) · Bapenda DKI Jakarta · Tampilan besar &amp; mudah dibaca</small></div>
 <div id="dkb" aria-live="polite"></div>
 <div><label for="sel">Pilih Layanan:</label> <select id="sel"></select></div><div id="hb"></div></header>
-<div id="wrap"><div id="strip"><b id="st2">Bagan alur</b></div><div id="stage"><div id="ct"></div></div><div id="hd"><div id="hdi"></div></div><button id="al" class="arr" aria-label="Geser ke kiri">◀</button><button id="ar" class="arr" aria-label="Geser ke kanan">▶</button><button id="pbtn" class="inf" title="Cetak alur kerja ini" aria-label="Cetak alur kerja ini">🖨</button><div id="mb"><button id="home" class="inf">⌂ Menu Awal</button> <button id="mbtn" class="pri" aria-haspopup="true">☰ Menu ▾</button><div id="mn"><label for="sel2">Ganti layanan:</label><select id="sel2" style="width:100%;min-width:0"></select><hr><div class="bar" role="toolbar" aria-label="Pengaturan tampilan">
+<div id="wrap"><div id="strip"><b id="st2">Bagan alur</b></div><div id="stage"><div id="ct"></div></div><div id="hd"><div id="hdi"></div></div><button id="al" class="arr" aria-label="Geser ke kiri">◀</button><button id="ar" class="arr" aria-label="Geser ke kanan">▶</button><button id="pbtn" class="inf" title="Cetak alur kerja ini" aria-label="Cetak alur kerja ini">🖨</button><div id="mb"><button id="home" class="inf">⌂ Menu Awal</button> <button id="pbt" class="pri" aria-haspopup="true">Peraturan ▾</button><div id="pm" role="menu"></div> <button id="mbtn" class="pri" aria-haspopup="true">☰ Menu ▾</button><div id="mn"><label for="sel2">Ganti layanan:</label><select id="sel2" style="width:100%;min-width:0"></select><hr><div class="bar" role="toolbar" aria-label="Pengaturan tampilan">
 <button id="zo" aria-label="Perkecil">− Perkecil</button><span id="zl" aria-live="polite">100%</span><button id="zi" aria-label="Perbesar">+ Perbesar</button><button id="zf">Pas Layar</button><button id="fs">⛶ Layar Penuh</button><button id="pdf" class="pri">🖨 Cetak / Simpan Alur Kerja (PDF)</button><button id="info" class="inf">Info &amp; Syarat Dokumen</button><button id="th">◐ Terang/Gelap</button></div>
 <div class="tabs" role="tablist"><button role="tab" aria-selected="true" data-t="alur">1. Bagan Alur</button><button role="tab" aria-selected="false" data-t="ring">2. Ringkasan</button><button role="tab" aria-selected="false" data-t="tab">3. Tabel Semua SOP</button></div>
 </div></div></div>
 <div id="bk"><button id="home2" class="inf">⌂ Kembali ke Menu Awal</button></div>
 <section class="pane" id="ring"></section>
 <section class="pane" id="tab"></section>
+<section class="pane" id="prt"></section>
 <div id="pf"></div><dialog id="dlg"><div id="dbody"></div><button id="dx" class="pri" style="margin-top:16px">Tutup</button></dialog>
 <script>
 // k: s=mulai, p=proses, d=pertanyaan (y=jika YA, n=jika TIDAK), e=selesai. l=jalur pelaksana
@@ -89,8 +94,11 @@ const S=[
 S[3].s=S[2].s.map(a=>a.slice());S[3].s.forEach(a=>{a[2]=a[2].replace("perubahan data","penutupan").replace("Surat Usulan Perubahan, ubah data di sistem","Surat Keputusan Penutupan, ubah data di sistem").replace("Sampaikan usulan ke Bidang Teknologi Informasi","Sampaikan Surat Keputusan Penutupan ke WP")});
 const DOC=[["Kepkaban 146/2018","I–X/SOP/BPRD/2018","10 SOP: pendaftaran WP baru, penetapan secara jabatan, perubahan/penutupan NPWPD-NOPD (+ pemeriksaannya), pendataan, pemutakhiran profil, penyampaian &amp; verifikasi SPTPD"],["Kepkaban 2327/2019","I–VIII/SOP/BPRD/VII/2019","8 SOP: penerimaan berkas, validasi SSPD-BPHTB, PKS pemanfaatan data, rapat pembahasan data, pembuatan aplikasi data, pemanfaatan data, pengaduan WP, pusat aduan"],["SOP Mutasi &amp; Pemecahan PBB-P2","13 Agustus 2018","Mutasi/pecah PBB-P2, selesai maksimal 14 hari, 14 langkah"],["Kepkaban 1201/2026","Juknis Pengawasan SPTPD","Pengawasan pembayaran &amp; pelaporan SPTPD, 4 kondisi WP, SP2DK, STPD"],["SK Kaban 160/2025","Juknis BPHTB elektronik","Penelitian BPHTB di Coretax, 10 hari kerja, pembetulan, restitusi, STPD"],["Kepkadis 1189/2018","Perubahan SOP ke-6","Validasi BPHTB, mutasi/pecah PBB, salinan SPPT, arsip (berkas hasil pindai, belum dibaca rinci)"]];
 const DK={1:[[0]],2:[[0]],3:[[0]],4:[[0]],5:[[0]],6:[[0]],7:[[2,"13 Agustus 2018"]],8:[[1]],9:[[1]],10:[[1]],11:[[3,"Alur A, SP2DK (Alur E)"]],12:[[4,"Juknis BPHTB elektronik"]]};
-function dkList(s){return DK[s.id].map(a=>[DOC[a[0]][0],a[1]||s.no])}
-function dkSet(s){$("#dkb").innerHTML='<div class="dkh">Dokumen</div>'+dkList(s).map(d=>`<div class="dkc"><b>${d[0]}</b><span>${d[1]}</span></div>`).join("")}
+function dkList(s){return DK[s.id].map(a=>[DOC[a[0]][0],a[1]||s.no,a[0]])}
+/* peta: nomor dokumen (DOC) -> nomor di daftar Peraturan (PR) */
+const DOCP={0:0,1:2,3:1,4:3,5:5};
+function dlink(di,txt){const k=DOCP[di];return(k!==undefined&&typeof PR!=="undefined"&&PR[k]&&PR[k].id)?`<a class="dl" href="#" data-p="${k}" title="Buka dokumen">${txt} ↗</a>`:txt}
+function dkSet(s){$("#dkb").innerHTML='<div class="dkh">Dokumen</div>'+dkList(s).map(d=>`<div class="dkc"><b>${dlink(d[2],d[0])}</b><span>${d[1]}</span></div>`).join("")}
 const $=q=>document.querySelector(q),sel=$("#sel"),ct=$("#ct");let cur=S[0],z=1,fit=1;
 S.forEach((s,i)=>sel.add(new Option(s.t.replace(/&amp;/g,"&"),i)));
 function wrap(t,n){t=t.replace(/&amp;/g,"&");const w=t.split(" ");let r=[],c="";w.forEach(x=>{if((c+" "+x).trim().length>n&&c){r.push(c);c=x}else c=(c+" "+x).trim()});r.push(c);return r.map(x=>x.replace(/&/g,"&amp;"))}
@@ -118,9 +126,9 @@ function fitZ(){const sv=ct.firstChild;setZ(Math.min(1,($("#stage").clientWidth-
 function load(i){cur=S[i];ct.innerHTML=draw(cur);hdSet(cur);dkSet(cur);$("#st2").textContent=cur.t.replace(/&amp;/g,"&");st.scrollTop=0;fitZ();$("#ttl").innerHTML="Alur Kerja (Workflow) – "+cur.t.replace(/^\d+\. /,"")}
 function info(){const c=cur;$("#dbody").innerHTML=`<h2>${c.t}</h2><p class="tag">${c.no}</p><dl><dt>Lama proses</dt><dd>${c.i[0]}</dd><dt>Hasil akhir</dt><dd>${c.i[1]}</dd><dt>Syarat &amp; catatan penting</dt><dd>${c.i[2]}</dd><dt>Dasar hukum umum</dt><dd>UU 28/2009 tentang Pajak Daerah dan Retribusi Daerah; Perda 6/2010; Pergub 262/2016 dan 297/2016</dd></dl><p class="hint">Tanya petugas UPPRD terdekat bila ada dokumen yang belum jelas.</p>`;$("#dlg").showModal()}
 function mk(){$("#ring").innerHTML=`<div class="hint"><b>Cara membaca bagan:</b> mulai dari kapsul <b>hitam</b> (Mulai), ikuti panah biru. Belah ketupat <b>kuning</b> adalah pertanyaan: panah <b style="color:var(--gr)">hijau = YA</b>, panah <b style="color:var(--rd)">merah putus-putus = TIDAK</b>. Kapsul <b style="color:var(--gr)">hijau</b> berarti selesai. Setiap kolom adalah pihak yang bekerja.</div><div class="grid">`+S.map((s,i)=>`<div class="card"><h3>${s.t}</h3><span class="tag">${s.no}</span><p><b>Lama:</b> ${s.i[0]}</p><p><b>Hasil:</b> ${s.i[1]}</p><p><b>Catatan:</b> ${s.i[2]}</p><button data-go="${i}">Lihat bagan</button></div>`).join("")+`</div><h2>Pengawasan SPTPD: 4 kondisi Wajib Pajak (Kepkaban 1201/2026)</h2><div class="wrap"><table><tr><th>Alur</th><th>Kondisi WP</th><th>Tindak lanjut petugas</th></tr><tr><td>A</td><td>Bayar dan lapor</td><td>Teliti SPTPD; STPD bila kurang/terlambat; SP2DK atau usul pemeriksaan bila ada anomali</td></tr><tr><td>B</td><td>Lapor, tidak bayar</td><td>Imbauan (5 hari kerja), lalu STPD atau SP2DK</td></tr><tr><td>C</td><td>Bayar, tidak lapor</td><td>Imbauan (5 hari kerja), lalu SP2DK</td></tr><tr><td>D</td><td>Tidak bayar dan tidak lapor</td><td>Stiker/plang pemberitahuan, SP2DK, usul pemeriksaan bila tidak kooperatif</td></tr><tr><td>E</td><td>SP2DK</td><td>Kumpul data, kirim SP2DK, klarifikasi, kunjungan lapangan, lalu STPD manual atau pemeriksaan</td></tr></table></div>`;
-$("#tab").innerHTML=`<div class="wrap"><table><tr><th>No</th><th>Dokumen</th><th>Nomor / Judul</th><th>Isi singkat</th></tr>`+DOC.map((d,i)=>`<tr><td>${i+1}</td><td><b>${d[0]}</b></td><td>${d[1]}</td><td>${d[2]}</td></tr>`).join("")+`</table></div><h2>Tabel Layanan &amp; Waktu</h2><div class="wrap"><table><tr><th>Layanan</th><th>Lama</th><th>Hasil</th></tr>`+S.map(s=>`<tr><td>${s.t}</td><td>${s.i[0]}</td><td>${s.i[1]}</td></tr>`).join("")+`</table></div>`;
+$("#tab").innerHTML=`<div class="wrap"><table><tr><th>No</th><th>Dokumen</th><th>Nomor / Judul</th><th>Isi singkat</th></tr>`+DOC.map((d,i)=>`<tr><td>${i+1}</td><td><b>${dlink(i,d[0])}</b></td><td>${d[1]}</td><td>${d[2]}</td></tr>`).join("")+`</table></div><h2>Tabel Layanan &amp; Waktu</h2><div class="wrap"><table><tr><th>Layanan</th><th>Lama</th><th>Hasil</th></tr>`+S.map(s=>`<tr><td>${s.t}</td><td>${s.i[0]}</td><td>${s.i[1]}</td></tr>`).join("")+`</table></div>`;
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{sel.value=b.dataset.go;load(+b.dataset.go);tab("alur")})}
-function tab(t){document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t==t));$("#wrap").style.display=t=="alur"?"block":"none";$("#bk").style.display=t=="alur"?"none":"block";$("#ring").className="pane"+(t=="ring"?" on":"");$("#tab").className="pane"+(t=="tab"?" on":"");if(t=="alur")fitZ()}
+function tab(t){document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t==t));$("#wrap").style.display=t=="alur"?"block":"none";$("#bk").style.display=t=="alur"?"none":"block";$("#ring").className="pane"+(t=="ring"?" on":"");$("#tab").className="pane"+(t=="tab"?" on":"");$("#prt").className="pane"+(t=="prt"?" on":"");if(t=="alur")fitZ()}
 sel.onchange=()=>{tab("alur");load(+sel.value)};$("#zi").onclick=()=>setZ(z+.15);$("#zo").onclick=()=>setZ(z-.15);$("#zf").onclick=fitZ;
 $("#fs").onclick=()=>{const e=$("#wrap");document.fullscreenElement?document.exitFullscreen():(e.requestFullscreen||e.webkitRequestFullscreen||(()=>{})).call(e)};
 $("#pdf").onclick=()=>{$("#pf").innerHTML="<h2>"+cur.t+"</h2><p>"+cur.no+" · Bapenda DKI Jakarta· Alur Kerja (Workflow)</p><p><b>Dokumen:</b> "+dkList(cur).map(d=>d[0]).join("; ")+"</p>"+draw(cur).replace(/\swidth="\d+" height="\d+"/,' width="100%" height="18cm"');mn.classList.remove("on");setTimeout(()=>print(),150)};
@@ -143,5 +151,34 @@ let dn=0,px=0,py=0,pl=0,pt=0;
 st.addEventListener("pointerdown",e=>{if(e.pointerType!="mouse"||e.target.closest("button"))return;dn=1;px=e.clientX;py=e.clientY;pl=st.scrollLeft;pt=st.scrollTop;st.classList.add("drag")});
 addEventListener("pointermove",e=>{if(dn){st.scrollLeft=pl-(e.clientX-px);st.scrollTop=pt-(e.clientY-py)}});
 addEventListener("pointerup",()=>{dn=0;st.classList.remove("drag")});
-function home(){tab("alur");sel.value=0;$("#sel2").value=0;load(0);st.scrollLeft=0;mn.classList.remove("on");scrollTo(0,0)}$("#home").onclick=home;$("#home2").onclick=home;$("#pbtn").onclick=()=>$("#pdf").click();const mb=$("#mb");$("#hb").appendChild(mb);mb.classList.add("top");document.addEventListener("fullscreenchange",()=>{const f=document.fullscreenElement;(f?$("#wrap"):$("#hb")).appendChild(mb);mb.classList.toggle("top",!f);posHd()});mk();load(0);
+function home(){tab("alur");sel.value=0;$("#sel2").value=0;load(0);st.scrollLeft=0;mn.classList.remove("on");scrollTo(0,0)}$("#home").onclick=home;$("#home2").onclick=home;$("#pbtn").onclick=()=>$("#pdf").click();const mb=$("#mb");$("#hb").appendChild(mb);mb.classList.add("top");document.addEventListener("fullscreenchange",()=>{const f=document.fullscreenElement;(f?$("#wrap"):$("#hb")).appendChild(mb);mb.classList.toggle("top",!f);posHd()});
+/* ===== PERATURAN (Google Drive) =====
+   Ganti judul (t) dan ID file Drive (id). ID = bagian antara /d/ dan /view pada link Drive.
+   Tambah baris baru bila ada peraturan lain. File harus dibagikan "Siapa saja yang memiliki link". */
+const PR=[
+ {t:"SK Kaban No. 146 Tahun 2018",id:"1xUV_QgHyZkS8OUlWXOeCZvhHLOR2W54L"},
+ {t:"SK Kaban No. 1201 Tahun 2026",id:"CcijrCfZBuqDzBWp3qSrBEZCqBUfQVz4CWGHWF91iaEw"},
+ {t:"SK Kaban No. 2327 Tahun 2019",id:"1b34WxkKZc85iraEYv-btCtGJesLPnjwi"},
+ {t:"SK Kaban No. 160 Tahun 2025",id:"1I4skcXq5oGcE5VQxXXZGlN8Qc2GOrEM1"},
+ {t:"SK Kaban No. 1489 Tahun 2018",id:"1S0jimhzFIkCIG2gLuZnH4ZvwkUFzpKWd"},
+ {t:"SK Kepala Dinas No. 1189 Tahun 2018",id:""}
+];
+const pm=$("#pm");
+pm.innerHTML="<b>Pilih peraturan:</b>";
+PR.forEach((r,i)=>{const b=document.createElement("button");b.textContent=(i+1)+". "+r.t+(r.id?"":" (link belum diisi)");if(!r.id)b.disabled=true;b.onclick=()=>{pOpen(i);pm.classList.remove("on")};pm.appendChild(b)});
+function pOpen(i){
+ if(document.fullscreenElement)document.exitFullscreen();
+ const r=PR[i];
+ $("#prt").innerHTML='<div id="pvh"><h2></h2><a class="btnl" target="_blank" rel="noopener">↗ Buka di tab baru</a></div><iframe id="pfr" allow="fullscreen"></iframe><p class="hint">Bila dokumen tidak tampil, pastikan koneksi internet aktif dan file Drive dibagikan ke &quot;Siapa saja yang memiliki link&quot;, atau pakai tombol &quot;Buka di tab baru&quot;.</p>';
+ $("#pvh h2").textContent=(i+1)+". "+r.t;
+ $("#pvh a").href="https://drive.google.com/file/d/"+r.id+"/view";
+ $("#pfr").title=r.t;$("#pfr").src="https://drive.google.com/file/d/"+r.id+"/preview";
+ [...pm.querySelectorAll("button")].forEach((b,k)=>b.setAttribute("aria-current",k==i));
+ tab("prt");scrollTo(0,0)}
+document.addEventListener("click",e=>{const a=e.target.closest("a[data-p]");if(a){e.preventDefault();pOpen(+a.dataset.p)}});
+$("#pbt").onclick=e=>{e.stopPropagation();mn.classList.remove("on");pm.classList.toggle("on")};
+$("#mbtn").addEventListener("click",()=>pm.classList.remove("on"));
+pm.onclick=e=>e.stopPropagation();
+document.addEventListener("click",()=>pm.classList.remove("on"));
+mk();load(0);
 </script></body></html>
